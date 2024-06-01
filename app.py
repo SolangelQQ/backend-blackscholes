@@ -1,6 +1,6 @@
+import numpy as np
 from flask import Flask, jsonify, request
 from flask_cors import CORS
-import numpy as np
 from scipy.stats import norm
 
 app = Flask(__name__)
@@ -64,7 +64,7 @@ def calcular_black_scholes():
         K = float(data.get('K', 0))
         r = float(data.get('r', 0))
         sigma = float(data.get('sigma', 0))
-        T = float(data.get('T', 0))
+        T_days = float(data.get('T', 0))  # Tomamos T en años
 
         nx = 100
         xmin = 0
@@ -72,18 +72,18 @@ def calcular_black_scholes():
         dx = (xmax - xmin) / (nx - 1)
 
         nt = 100
-        dt = T / nt
+        dt = T_days / nt  # Convertimos T de años a días
 
         x = np.linspace(xmin, xmax, nx)
 
         if tipo_opcion == 'ambas':
-            historial_venta = ftbs_opciones_black_scholes(S0, K, r, sigma, T, nx, nt, dt, dx, 'venta', x)
-            historial_compra = ftbs_opciones_black_scholes(S0, K, r, sigma, T, nx, nt, dt, dx, 'compra', x)
+            historial_venta = ftbs_opciones_black_scholes(S0, K, r, sigma, T_days, nx, nt, dt, dx, 'venta', x)
+            historial_compra = ftbs_opciones_black_scholes(S0, K, r, sigma, T_days, nx, nt, dt, dx, 'compra', x)
             historial_venta_serializable = [arr.tolist() for arr in historial_venta]
             historial_compra_serializable = [arr.tolist() for arr in historial_compra]
             resultado = {'x': x.tolist(), 'historial-venta': historial_venta_serializable, 'historial-compra': historial_compra_serializable}
         else:
-            historial = ftbs_opciones_black_scholes(S0, K, r, sigma, T, nx, nt, dt, dx, tipo_opcion, x)
+            historial = ftbs_opciones_black_scholes(S0, K, r, sigma, T_days, nx, nt, dt, dx, tipo_opcion, x)
             historial_serializable = [arr.tolist() for arr in historial]
             resultado = {'x': x.tolist(), 'historial': historial_serializable}
         

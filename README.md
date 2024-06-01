@@ -1,2 +1,7 @@
-python -m http.server
-python app.py
+# Instalar dependencias necesarias
+
+- pip install -r requirements.txt
+
+# Ejecutar backend
+
+- python app.py
